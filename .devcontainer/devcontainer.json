@@ -1,0 +1,23 @@
+{
+  "name": "MCP WeChat Publisher",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  },
+  "postCreateCommand": "npm install && npm run build",
+  "forwardPorts": [3000],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode-remote.remote-containers",
+        "dbaeumer.vscode-eslint"
+      ]
+    }
+  },
+  "remoteEnv": {
+    "WECHAT_APP_ID": "${localEnv:WECHAT_APP_ID}",
+    "WECHAT_APP_SECRET": "${localEnv:WECHAT_APP_SECRET}"
+  }
+}
