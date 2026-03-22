@@ -8,6 +8,12 @@
   },
   "postCreateCommand": "npm install && npm run build",
   "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "WeChat Publisher",
+      "onAutoForward": "openBrowser"
+    }
+  },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -18,6 +24,7 @@
   },
   "remoteEnv": {
     "WECHAT_APP_ID": "${localEnv:WECHAT_APP_ID}",
-    "WECHAT_APP_SECRET": "${localEnv:WECHAT_APP_SECRET}"
+    "WECHAT_APP_SECRET": "${localEnv:WECHAT_APP_SECRET}",
+    "AUTH_TOKEN": "${localEnv:AUTH_TOKEN}"
   }
 }

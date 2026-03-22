@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "wechat-mp": {
+      "command": "node /home/he/.openclaw/workspace/mcp-wechat-codespaces/dist/index.js"
+    }
+  },
+  "imports": []
+}

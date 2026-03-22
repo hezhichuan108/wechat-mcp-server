@@ -1,13 +1,14 @@
 {
   "name": "mcp-wechat-publisher",
-  "version": "1.0.0",
-  "description": "MCP Server for WeChat Official Account article publishing",
+  "version": "2.0.0",
+  "description": "WeChat Official Account article publisher (MCP + HTTP)",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/http-server.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "tsx watch src/index.ts"
+    "start": "node dist/http-server.js",
+    "start:mcp": "node dist/index.js",
+    "dev": "tsx watch src/http-server.ts"
   },
   "keywords": ["mcp", "wechat", "publisher", "automation"],
   "author": "",
