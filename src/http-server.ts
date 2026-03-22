@@ -31,9 +31,10 @@ async function getWeChatCredentials(): Promise<{ appId: string; appSecret: strin
   // Try config.json (for Codespaces deployment)
   try {
     const fs = await import('node:fs');
-    const configData = fs.readFileSync(
-      new URL('../config.json', import.meta.url), 'utf-8'
-    );
+    const path = await import('node:path');
+    const configPath = path.resolve(process.cwd(), 'config.json');
+    console.log(`🔍 Looking for config.json at: ${configPath}`);
+    const configData = fs.readFileSync(configPath, 'utf-8');
     const config = JSON.parse(configData);
     appId = appId || config.WECHAT_APP_ID || '';
     appSecret = appSecret || config.WECHAT_APP_SECRET || '';
@@ -41,7 +42,9 @@ async function getWeChatCredentials(): Promise<{ appId: string; appSecret: strin
       console.log('✅ WeChat credentials loaded from config.json');
       return { appId, appSecret };
     }
-  } catch {}
+  } catch (e) {
+    console.log(`⚠️ config.json not found or invalid: ${e}`);
+  }
   
   console.warn('⚠️  WeChat credentials not configured!');
   return { appId, appSecret };
