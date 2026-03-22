@@ -12,14 +12,56 @@
 
 import http from 'node:http';
 import { WeChatMP } from './wechat-api.js';
+import { execSync } from 'node:child_process';
 
 const PORT = Number(process.env.PORT) || 3000;
 const AUTH_TOKEN = process.env.AUTH_TOKEN || '';  // Simple auth for API protection
 
-const wechatClient = new WeChatMP({
-  appId: process.env.WECHAT_APP_ID || '',
-  appSecret: process.env.WECHAT_APP_SECRET || '',
-});
+// --- Auto-fetch WeChat credentials ---
+// Priority: env vars > config.json > codespace secrets
+async function getWeChatCredentials(): Promise<{ appId: string; appSecret: string }> {
+  let appId = process.env.WECHAT_APP_ID || '';
+  let appSecret = process.env.WECHAT_APP_SECRET || '';
+  
+  if (appId && appSecret) {
+    console.log('✅ WeChat credentials loaded from environment variables');
+    return { appId, appSecret };
+  }
+  
+  // Try config.json (for Codespaces deployment)
+  try {
+    const fs = await import('node:fs');
+    const configData = fs.readFileSync(
+      new URL('../config.json', import.meta.url), 'utf-8'
+    );
+    const config = JSON.parse(configData);
+    appId = appId || config.WECHAT_APP_ID || '';
+    appSecret = appSecret || config.WECHAT_APP_SECRET || '';
+    if (appId && appSecret) {
+      console.log('✅ WeChat credentials loaded from config.json');
+      return { appId, appSecret };
+    }
+  } catch {}
+  
+  console.warn('⚠️  WeChat credentials not configured!');
+  return { appId, appSecret };
+}
+
+// Initialize credentials asynchronously
+let wechatClient: WeChatMP;
+let initPromise: Promise<void>;
+
+async function init() {
+  const creds = await getWeChatCredentials();
+  wechatClient = new WeChatMP({
+    appId: creds.appId,
+    appSecret: creds.appSecret,
+  });
+  if (!creds.appId || !creds.appSecret) {
+    console.warn('⚠️  WeChat credentials not configured! Set WECHAT_APP_ID and WECHAT_APP_SECRET');
+  }
+}
+initPromise = init();
 
 // --- Helpers ---
 
@@ -103,6 +145,8 @@ const server = http.createServer(async (req, res) => {
   }
 
   try {
+    await initPromise;  // Ensure credentials are loaded
+
     // Health check
     if (url.pathname === '/api/health' && req.method === 'GET') {
       json(res, 200, { status: 'ok', service: 'wechat-mp-publisher', time: new Date().toISOString() });
