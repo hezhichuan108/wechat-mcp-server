@@ -11,8 +11,8 @@
   "forwardPorts": [3000],
   "portsAttributes": {
     "3000": {
-      "label": "WeChat Publisher",
-      "onAutoForward": "openBrowser",
+      "label": "微信后端服务",
+      "onAutoForward": "silent",
       "visibility": "public"
     }
   },
