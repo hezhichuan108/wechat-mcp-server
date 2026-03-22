@@ -7,11 +7,13 @@
     }
   },
   "postCreateCommand": "npm install && npm run build",
+  "postStartCommand": "nohup node dist/http-server.js > /tmp/wechat-server.log 2>&1 &",
   "forwardPorts": [3000],
   "portsAttributes": {
     "3000": {
       "label": "WeChat Publisher",
-      "onAutoForward": "openBrowser"
+      "onAutoForward": "openBrowser",
+      "visibility": "public"
     }
   },
   "customizations": {
